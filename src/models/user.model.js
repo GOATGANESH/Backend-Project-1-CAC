@@ -33,14 +33,13 @@ const userSchema = new mongoose.Schema(
     },
     avatar: {
       type: String,
+      required:true
     },
     coverImage: {
       type: String,
     },
     password: {
       type: String,
-      minlength: 6,
-      maxlength: 8,
       required: [true,"ERROR !"]
     },
     refreshToken: {
@@ -52,8 +51,8 @@ const userSchema = new mongoose.Schema(
 
 userSchema.pre("save",async function(next){
   if(!this.isModified("password")) return next();
-  this.password = bcrypt.hash(this.password,10);
-  next();
+  this.password = await bcrypt.hash(this.password,10);
+  
 });
 
 userSchema.methods.isPasswordCorrect = async function(password){
@@ -87,4 +86,5 @@ userSchema.methods.generateRefreshToken = function(){
   )
 }
 
-export default User = mongoose.model("User", userSchema);
+
+export const User = mongoose.model("User", userSchema);
